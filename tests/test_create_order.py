@@ -1,7 +1,6 @@
 from api_methods import ApiMethods
 from data import Data
 from helpers import Helper
-import pytest
 import allure
 
 
