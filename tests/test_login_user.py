@@ -24,5 +24,5 @@ class TestLoginUser:
     )
     def test_unsuccessful_login_user(self,email, password):
         authorization_response = ApiMethods.login_user(email, password)
-        assert authorization_response.json()['message'] == "email or password are incorrect"
+        assert authorization_response.status_code == 401 and authorization_response.json()['message'] == "email or password are incorrect"
 

@@ -22,3 +22,7 @@ class Helper:
         password = ''.join(random.choice(letters) for _ in range(length))
         return password
 
+    @staticmethod
+    def extract_ingredient_ids(data):
+        return [item['_id'] for item in data]
+

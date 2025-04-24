@@ -1,5 +1,5 @@
-
 from api_methods import ApiMethods
+from data import Data
 from helpers import Helper
 import pytest
 import allure
@@ -9,141 +9,96 @@ import allure
 class TestUpdateUser:
 
     @allure.title("Тест на изменение email авторизованного пользователя")
-    def test_change_user_email(self):
+    def test_change_user_email(self, user_data):
         # Данные для регистрации пользователя
-        email = Helper.generate_email()
-        password = Helper.generate_password()
-        username = Helper.generate_name()
+        email = user_data['email']
+        password = user_data['password']
+        username = user_data['username']
         new_email = Helper.generate_email()
+        token = user_data['token']
 
-        # Регистрация пользователя
-        ApiMethods.register_user(email, password, username)
-
-        # Авторизация пользователя
-        response= ApiMethods.login_user(email, password)
-
-        # Получаем токен для авторизации
-        token = response.json().get('accessToken')
-
-        # Обновление данных пользователя
-        update_response=ApiMethods.change_user_email(token, new_email, password, username)
-        assert update_response.status_code == 200 and update_response.json()['user']['email'] == new_email
-
-        # Удаление пользователя
-        ApiMethods.delete_user(token)
-
-    @allure.title("Тест на изменение имени авторизованного пользователя")
-    def test_change_user_email(self):
-        # Данные для регистрации пользователя
-        email = Helper.generate_email()
-        password = Helper.generate_password()
-        username = Helper.generate_name()
-        new_username = Helper.generate_name()
-
-        # Регистрация пользователя
-        ApiMethods.register_user(email, password, username)
-
-        # Авторизация пользователя
-        response = ApiMethods.login_user(email, password)
-
-        # Получаем токен для авторизации
-        token = response.json().get('accessToken')
-
-        # Обновление данных пользователя
-        update_response = ApiMethods.change_user_name(token, email, password, new_username)
-        assert update_response.status_code == 200 and update_response.json()['user']['name'] == new_username
-
-        # Удаление пользователя
-        ApiMethods.delete_user(token)
-
-
-    @allure.title("Тест на изменение пароля авторизованного пользователя")
-    def test_change_user_password(self):
-        # Данные для регистрации пользователя
-        email = Helper.generate_email()
-        password = Helper.generate_password()
-        username = Helper.generate_name()
-        new_password = Helper.generate_password()
-
-        # Регистрация пользователя
-        ApiMethods.register_user(email, password, username)
-
-        # Авторизация пользователя
-        response = ApiMethods.login_user(email, password)
-
-        # Получаем токен для авторизации
-        token = response.json().get('accessToken')
-
-        # Обновление данных пользователя
-        update_response = ApiMethods.change_user_name(token, email, new_password, username)
-        assert update_response.status_code == 200 and update_response.json()['success'] == True
-
-        # Удаление пользователя
-        ApiMethods.delete_user(token)
-
-    @allure.title("Тест на изменение email неавторизованного пользователя")
-    def test_change_unauthorized_user_email(self):
-        # Данные для регистрации пользователя
-        email = Helper.generate_email()
-        password = Helper.generate_password()
-        username = Helper.generate_name()
-        new_email = Helper.generate_email()
-
-        # Регистрация пользователя
-        response=ApiMethods.register_user(email, password, username)
-        token = response.json().get('accessToken')
+        ApiMethods.login_user(email, password)
 
         # Обновление данных пользователя
         update_response = ApiMethods.change_user_email(token, new_email, password, username)
         assert update_response.status_code == 200 and update_response.json()['user']['email'] == new_email
 
-        # Удаление пользователя
-        ApiMethods.delete_user(token)
 
-    @allure.title("Тест на изменение имени неавторизованного пользователя")
-    def test_change_unauthorized_user_email(self):
+    @allure.title("Тест на изменение имени авторизованного пользователя")
+    def test_change_user_name(self, user_data):
         # Данные для регистрации пользователя
-        email = Helper.generate_email()
-        password = Helper.generate_password()
-        username = Helper.generate_name()
-        new_username = Helper.generate_name()
+        email = user_data['email']
+        password = user_data['password']
+        token = user_data['token']
+        new_username = Helper.generate_email()
 
-        # Регистрация пользователя
-        response = ApiMethods.register_user(email, password, username)
-        token = response.json().get('accessToken')
+        # Авторизация пользователя
+        ApiMethods.login_user(email, password)
 
         # Обновление данных пользователя
         update_response = ApiMethods.change_user_name(token, email, password, new_username)
         assert update_response.status_code == 200 and update_response.json()['user']['name'] == new_username
 
-        # Удаление пользователя
-        ApiMethods.delete_user(token)
-
-    @allure.title("Тест на изменение пароля неавторизованного пользователя")
-    def test_change_unauthorized_user_password(self):
+    @allure.title("Тест на изменение пароля авторизованного пользователя")
+    def test_change_user_password(self, user_data):
         # Данные для регистрации пользователя
-        email = Helper.generate_email()
-        password = Helper.generate_password()
-        username = Helper.generate_name()
+        email = user_data['email']
+        password = user_data['password']
+        username = user_data['username']
+        token = user_data['token']
         new_password = Helper.generate_password()
 
-        # Регистрация пользователя
-        response = ApiMethods.register_user(email, password, username)
-        token = response.json().get('accessToken')
+        # Авторизация пользователя
+        ApiMethods.login_user(email, password)
 
         # Обновление данных пользователя
         update_response = ApiMethods.change_user_name(token, email, new_password, username)
         assert update_response.status_code == 200 and update_response.json()['success'] == True
 
-        # Удаление пользователя
-        ApiMethods.delete_user(token)
+
+    @allure.title("Тест на изменение email неавторизованного пользователя")
+    def test_change_unauthorized_user_email(self, user_data):
+        # Данные для регистрации пользователя
+        password = user_data['password']
+        username = user_data['username']
+        new_email = Helper.generate_email()
+        token = user_data['token']
+
+        # Обновление данных пользователя
+        update_response = ApiMethods.change_user_email(token, new_email, password, username)
+        assert update_response.status_code == 200 and update_response.json()['user']['email'] == new_email
+
+    @allure.title("Тест на изменение имени неавторизованного пользователя")
+    def test_change_unauthorized_user_name(self, user_data):
+        # Данные для регистрации пользователя
+        email = user_data['email']
+        password = user_data['password']
+        token = user_data['token']
+        new_username = Helper.generate_email()
+
+        # Обновление данных пользователя
+        update_response = ApiMethods.change_user_name(token, email, password, new_username)
+        assert update_response.status_code == 200 and update_response.json()['user']['name'] == new_username
+
+    @allure.title("Тест на изменение пароля неавторизованного пользователя")
+    def test_change_unauthorized_user_password(self, user_data):
+        # Данные для регистрации пользователя
+        email = user_data['email']
+        username = user_data['username']
+        token = user_data['token']
+        new_password = Helper.generate_password()
+
+        # Обновление данных пользователя
+        update_response = ApiMethods.change_user_name(token, email, new_password, username)
+        assert update_response.status_code == 200 and update_response.json()['success'] == True
+
 
     @allure.title("Тест на изменение email пользователя без поля авторизации")
-    def test_change_unauthorized_user_email_without_authorization(self):
+    def test_change_unauthorized_user_email_without_authorization(self, user_data):
         # Данные для регистрации пользователя
-        email = Helper.generate_email()
-        password = Helper.generate_password()
-        username = Helper.generate_name()
+        email = user_data['email']
+        password = user_data['password']
+        username = user_data['username']
         new_email = Helper.generate_email()
 
         # Регистрация пользователя

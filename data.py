@@ -3,3 +3,4 @@ class Data:
     password = 'qwerty789'
 
     ingredient_ids = "1111"
+

@@ -57,7 +57,8 @@ class ApiMethods:
         with allure.step("Получение данных о заказе пользователя"):
             headers = {'Authorization': f'Bearer{access_token}'}
             response = requests.get(CURL.create_order, headers=headers)
-            return response.json()
+            return response
+            #return response.json()
 
     @staticmethod
     def create_order(ingredients,access_token):
